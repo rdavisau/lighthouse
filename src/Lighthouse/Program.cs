@@ -10,6 +10,9 @@
 // under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR 
 // CONDITIONS OF ANY KIND, either express or implied. See the License for the 
 // specific language governing permissions and limitations under the License.
+
+using System;
+using System.Linq;
 using Topshelf;
 
 namespace Lighthouse
@@ -20,6 +23,12 @@ namespace Lighthouse
         {
             return (int) HostFactory.Run(x =>
             {
+                x.AddCommandLineDefinition("systemName", sn => LighthouseHostFactory.CommandLineSystemName = sn);
+                x.AddCommandLineDefinition("publicHostName", hn => LighthouseHostFactory.CommandLinePublicHostName = hn);
+                x.AddCommandLineDefinition("port", p => LighthouseHostFactory.CommandLinePort = int.Parse(p));
+                x.AddCommandLineDefinition("seedNodes", seedNodes => LighthouseHostFactory.CommandLineAdditionalSeedNodes = seedNodes.Split(';').ToList());
+                x.AddCommandLineDefinition("roles", roles => LighthouseHostFactory.CommandLineAdditionalRoles = roles.Split(';').ToList());
+                
                 x.SetServiceName("Lighthouse");
                 x.SetDisplayName("Lighthouse Service Discovery");
                 x.SetDescription("Lighthouse Service Discovery for Akka.NET Clusters");
